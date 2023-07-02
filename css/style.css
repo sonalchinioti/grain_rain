@@ -1441,7 +1441,7 @@ a:focus {
 .footer .footer-social a i {
     margin-right: 15px;
     font-size: 18px;
-    color: #092a49;
+    color: #ffffff;
 }
 
 .footer .footer-social a:last-child i {
@@ -1449,7 +1449,7 @@ a:focus {
 }
 
 .footer .footer-social a:hover i {
-    color: #999999;
+    color: #0796fe;
 }
 
 .footer .footer-newsletter .form {
