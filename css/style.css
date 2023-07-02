@@ -654,6 +654,10 @@ a:focus {
     background: #092a49;
 }
 
+.about .about-text .active {
+    color: #0796fe;
+}
+
 @media (max-width: 767.98px) {
     .about .about-img {
         margin-bottom: 30px;
