@@ -1215,6 +1215,17 @@ a:focus {
 .blog .pagination .disabled .page-link {
     color: #999999;
 }
+/*******************************/
+/********* Embed Social Media ******/
+/*******************************/
+
+.embed-social-media {
+    background: #092a49;
+}
+
+.embed-social-media .section-header h2 {
+    color: #ffffff;
+}
 
 
 /*******************************/
