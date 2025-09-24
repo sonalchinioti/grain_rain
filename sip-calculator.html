@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP Calculator | Grow with GainRain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #2563eb;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .bg-primary {
+            background-color: #2563eb;
+        }
+        .text-primary {
+            color: #2563eb;
+        }
+        .border-primary {
+            border-color: #2563eb;
+        }
+        .bg-secondary {
+            background-color: #1e40af;
+        }
+        .text-secondary {
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="text-center mb-8 bg-primary text-white py-4 rounded-lg">
+            <h1 class="text-3xl font-bold">Grow with GainRain</h1>
+            <p class="mt-2">Plan your financial growth with our SIP Calculator</p>
+        </div>
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Calculator Section -->
+            <div class="w-full md:w-1/2 bg-white rounded-xl shadow-md p-6" data-aos="fade-right">
+                <h1 class="text-2xl font-bold text-gray-800 mb-6">SIP Calculator</h1>
+                <div class="mb-6">
+                    <label class="text-gray-700 font-medium block mb-2">Your Name (Optional)</label>
+                    <input type="text" id="personName" placeholder="Enter your name" class="w-full px-3 py-2 border border-gray-300 rounded-md font-medium">
+                </div>
+                <p class="text-gray-600 mb-6">Calculate the future value of your SIP investments</p>
+                
+                <!-- Monthly Investment -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-gray-700 font-medium">Monthly Investment (₹)</label>
+                        <input type="number" id="monthlyInvestment" value="5000" class="w-24 px-3 py-2 border border-gray-300 rounded-md text-right font-medium">
+                    </div>
+                    <input type="range" min="500" max="100000" step="500" value="5000" class="w-full" id="monthlyInvestmentRange">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>₹500</span>
+                        <span>₹1L</span>
+                    </div>
+                </div>
+                
+                <!-- Expected Return Rate -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-gray-700 font-medium">Expected Return Rate (p.a.)</label>
+                        <input type="number" id="returnRate" value="12" class="w-20 px-3 py-2 border border-gray-300 rounded-md text-right font-medium">
+                    </div>
+                    <input type="range" min="1" max="30" step="0.5" value="12" class="w-full" id="returnRateRange">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>1%</span>
+                        <span>30%</span>
+                    </div>
+                </div>
+                
+                <!-- Time Period -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-gray-700 font-medium">Time Period (years)</label>
+                        <input type="number" id="timePeriod" value="10" class="w-20 px-3 py-2 border border-gray-300 rounded-md text-right font-medium">
+                    </div>
+                    <input type="range" min="1" max="40" step="1" value="10" class="w-full" id="timePeriodRange">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>1 year</span>
+                        <span>40 years</span>
+                    </div>
+                </div>
+                
+                <button id="calculateBtn" class="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-secondary transition duration-200">
+                    Calculate
+                </button>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="w-full md:w-1/2 bg-white rounded-xl shadow-md p-6" data-aos="fade-left">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">SIP Projected Returns</h2>
+                
+                <div class="bg-gray-100 rounded-lg p-4 mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-600">Invested Amount</span>
+                        <span id="investedAmount" class="font-bold text-gray-800">₹6,00,000</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-600">Estimated Returns</span>
+                        <span id="estimatedReturns" class="font-bold text-primary">₹5,61,693</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Total Value</span>
+                        <span id="totalValue" class="font-bold text-gray-800">₹11,61,693</span>
+                    </div>
+                    <div class="mt-4">
+                        <canvas id="pieChart" height="200"></canvas>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-700 font-medium">Yearly Breakdown</span>
+                        <span class="text-sm text-primary cursor-pointer">View All</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="text-gray-500 text-sm border-b">
+                                    <th class="text-left pb-2">Year</th>
+                                    <th class="text-right pb-2">Invested</th>
+                                    <th class="text-right pb-2">Returns</th>
+                                    <th class="text-right pb-2">Total Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="yearlyBreakdown">
+                                <!-- Will be populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <i data-feather="info" class="text-primary mr-3 mt-1"></i>
+                        <div>
+                            <h3 class="font-medium text-gray-800 mb-1">What is SIP?</h3>
+                            <p class="text-gray-600 text-sm">A Systematic Investment Plan (SIP) is an investment method offered by mutual funds where you can invest a fixed amount at regular intervals.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+            AOS.init();
+            
+            // Get all elements
+            const monthlyInvestment = document.getElementById('monthlyInvestment');
+            const monthlyInvestmentRange = document.getElementById('monthlyInvestmentRange');
+            const returnRate = document.getElementById('returnRate');
+            const returnRateRange = document.getElementById('returnRateRange');
+            const timePeriod = document.getElementById('timePeriod');
+            const timePeriodRange = document.getElementById('timePeriodRange');
+            const calculateBtn = document.getElementById('calculateBtn');
+            
+            const investedAmount = document.getElementById('investedAmount');
+            const estimatedReturns = document.getElementById('estimatedReturns');
+            const totalValue = document.getElementById('totalValue');
+            const yearlyBreakdown = document.getElementById('yearlyBreakdown');
+            
+            // Sync input and range values
+            monthlyInvestment.addEventListener('input', function() {
+                monthlyInvestmentRange.value = this.value;
+                calculateSIP();
+                updateUrlParams();
+            });
+            
+            monthlyInvestmentRange.addEventListener('input', function() {
+                monthlyInvestment.value = this.value;
+                calculateSIP();
+                updateUrlParams();
+            });
+            
+            returnRate.addEventListener('input', function() {
+                returnRateRange.value = this.value;
+                calculateSIP();
+                updateUrlParams();
+            });
+            
+            returnRateRange.addEventListener('input', function() {
+                returnRate.value = this.value;
+                calculateSIP();
+                updateUrlParams();
+            });
+            
+            timePeriod.addEventListener('input', function() {
+                timePeriodRange.value = this.value;
+                calculateSIP();
+                updateUrlParams();
+            });
+            
+            timePeriodRange.addEventListener('input', function() {
+                timePeriod.value = this.value;
+                calculateSIP();
+                updateUrlParams();
+            });
+            
+            // Calculate SIP function
+            function calculateSIP() {
+                const P = parseFloat(monthlyInvestment.value);
+                const r = parseFloat(returnRate.value) / 100 / 12;
+                const n = parseFloat(timePeriod.value) * 12;
+                
+                // Future Value of SIP formula: FV = P * [((1 + r)^n - 1) / r] * (1 + r)
+                const FV = P * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+                const totalInvested = P * n;
+                const totalReturns = FV - totalInvested;
+                
+                // Update results
+                investedAmount.textContent = '₹' + formatNumber(totalInvested.toFixed(0));
+                estimatedReturns.textContent = '₹' + formatNumber(totalReturns.toFixed(0));
+                totalValue.textContent = '₹' + formatNumber(FV.toFixed(0));
+                
+                // Update pie chart
+                updatePieChart(totalInvested, totalReturns);
+                
+                // Update yearly breakdown
+                updateYearlyBreakdown(P, r, n);
+            }
+            
+            // Update yearly breakdown table
+            function updateYearlyBreakdown(P, r, n) {
+                yearlyBreakdown.innerHTML = '';
+                const years = parseInt(timePeriod.value);
+                
+                for (let year = 1; year <= years; year++) {
+                    const months = year * 12;
+                    const FV = P * ((Math.pow(1 + r, months) - 1) / r) * (1 + r);
+                    const totalInvested = P * months;
+                    const totalReturns = FV - totalInvested;
+                    
+                    const row = document.createElement('tr');
+                    row.className = 'border-b border-gray-100 text-sm';
+                    row.innerHTML = `
+                        <td class="py-3 text-gray-600">${year}</td>
+                        <td class="py-3 text-right text-gray-600">₹${formatNumber(totalInvested.toFixed(0))}</td>
+                        <td class="py-3 text-right text-primary">₹${formatNumber(totalReturns.toFixed(0))}</td>
+                        <td class="py-3 text-right text-gray-800">₹${formatNumber(FV.toFixed(0))}</td>
+                    `;
+                    
+                    yearlyBreakdown.appendChild(row);
+                }
+            }
+            
+            // Format number with commas
+            function formatNumber(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            // Initialize pie chart
+            let pieChart;
+            function updatePieChart(invested, returns) {
+                const ctx = document.getElementById('pieChart').getContext('2d');
+                
+                if (pieChart) {
+                    pieChart.destroy();
+                }
+                
+                pieChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Invested Amount', 'Estimated Returns'],
+                        datasets: [{
+                            data: [invested, returns],
+                            backgroundColor: ['#4b5563', '#2563eb'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 20,
+                                    font: {
+                                        family: 'sans-serif',
+                                        size: 12
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Get params from URL if present
+            function getUrlParams() {
+                const params = new URLSearchParams(window.location.search);
+                if (params.has('mi')) monthlyInvestment.value = monthlyInvestmentRange.value = params.get('mi');
+                if (params.has('rr')) returnRate.value = returnRateRange.value = params.get('rr');
+                if (params.has('tp')) timePeriod.value = timePeriodRange.value = params.get('tp');
+                if (params.has('pn')) document.getElementById('personName').value = decodeURIComponent(params.get('pn'));
+            }
+
+            // Update URL with current params
+            function updateUrlParams() {
+                const params = new URLSearchParams();
+                params.set('mi', monthlyInvestment.value);
+                params.set('rr', returnRate.value);
+                params.set('tp', timePeriod.value);
+                const personName = document.getElementById('personName').value;
+                if (personName) params.set('pn', encodeURIComponent(personName));
+                
+                const newUrl = window.location.pathname + '?' + params.toString();
+                window.history.pushState({}, '', newUrl);
+            }
+
+            // Share button functionality
+            function setupShareButton() {
+                const shareBtn = document.createElement('button');
+                shareBtn.className = 'w-full mt-4 bg-gray-100 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-200 transition duration-200 flex items-center justify-center';
+                shareBtn.innerHTML = '<i data-feather="share-2" class="mr-2"></i> Share Calculation';
+                shareBtn.addEventListener('click', function() {
+                    updateUrlParams();
+                    const url = window.location.href;
+                    navigator.clipboard.writeText(url).then(() => {
+                        alert('Sharable link copied to clipboard!');
+                    });
+                });
+                document.getElementById('calculateBtn').insertAdjacentElement('afterend', shareBtn);
+                feather.replace();
+            }
+
+            // Initial setup
+            getUrlParams();
+            calculateSIP();
+            setupShareButton();
+        });
+    </script>
+</body>
+</html>
